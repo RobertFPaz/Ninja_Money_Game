@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ninja Money</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css'%}">
+</head>
+<body>
+    <div id="wrapper">
+        <h1>Ninja Money!</h1>
+        <h3>Try to collect 100 gold in 10 tries or less.</h3>
+        <p class="count">Your Gold: {{request.session.gold}}</p>
+        <p class="count">Attempt: {{request.session.count}}</p>
+        {% if messages %}
+            {% for message in messages %}
+                <div id="msg" role="alert">
+                    {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form action="/process_money" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="count">
+            <div class="location">
+                <h2>Farm</h2>
+                <p>(earns 10-20 golds)</p>
+                <button name='farm' type="submit" value="Find Gold!">Find Gold!</button> 
+                <!-- <a href="/process_money/farm">Find Gold</a>   for url -->
+            </div>
+            <div class="location">
+                <h2>Cave</h2>
+                <p>(earns 5-10 golds)</p>
+                <button name='cave' type="submit" value="Find Gold!">Find Gold!</button>
+            </div>
+            <div class="location">
+                <h2>House</h2>
+                <p>(earns 2-5 golds)</p>
+                <button name='house' type="submit" value="Find Gold!">Find Gold!</button>
+            </div>
+            <div class="location">
+                <h2>Casino</h2>
+                <p>(earns/takes 0-50 golds)</p>
+                <button name='casino' type="submit" value="Find Gold!">Find Gold!</button>
+            </div>
+            <button name='reset' type="submit" value='reset' id="reset">Start Over</button>
+            <p id="activities">Activities:</p>
+            <div class="activities" data-autogrow="false">
+                {% for activity in request.session.activities reversed %}
+                    {% if "lost" in activity %}
+                        <p class="red">{{activity}}</p>
+                    {% else %}
+                        <p class="green">{{activity}}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <!-- <button name='reset' type="submit" value='reset'>Start Over</button> -->
+            <img src="{% static 'coins.png'%}" alt="gold coins">
+        </form>
+        
+    </div>
+</body>
+</html>
